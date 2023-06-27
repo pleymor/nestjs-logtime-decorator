@@ -1,24 +1,24 @@
-import { Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common'
 
-export type ContextSource = 'Request' | 'Response';
-type MeasureTimeContext = { from: ContextSource; key: string }[];
+export type ContextSource = 'Request' | 'Response'
+type MeasureTimeContext = { from: ContextSource; key: string }[]
 
 function getContextString(
   context: MeasureTimeContext,
-  requestArgs: unknown[],
-  response?: any,
+  requestArgs: any[],
+  response?: any
 ) {
   return context
     .map((c) => {
       if (c.from === 'Request') {
-        return `${c.key}: ${requestArgs[0][c.key]}`;
+        return `${c.key}: ${requestArgs[0][c.key]}`
       } else if (c.from === 'Response') {
-        return `${c.key}: ${response[c.key]}`;
+        return `${c.key}: ${response[c.key]}`
       } else {
-        throw new Error(`Invalid context from: ${c.from}`);
+        throw new Error(`Invalid context from: ${c.from}`)
       }
     })
-    .join(', ');
+    .join(', ')
 }
 
 /**
@@ -28,35 +28,36 @@ function getContextString(
  */
 export function MeasureTimeAsync(
   options: {
-    context: MeasureTimeContext;
+    context: MeasureTimeContext
   } = {
-    context: [],
-  },
+    context: []
+  }
 ) {
   return (
     target: any,
     propertyKey: string,
-    descriptor: TypedPropertyDescriptor<(...params: any[]) => Promise<any>>,
+    descriptor: TypedPropertyDescriptor<(...params: any[]) => Promise<any>>
   ) => {
-    const original: (...args: Array<unknown>) => unknown = descriptor.value;
+    const original: ((...params: any[]) => Promise<any>) | undefined =
+      descriptor.value
 
-    const timeLabel = propertyKey;
+    const timeLabel = propertyKey
     descriptor.value = async function (...args: Array<unknown>) {
-      const startTime = Date.now();
-      const responseBody = await original.apply(this, args);
+      const startTime = Date.now()
+      const responseBody = await original?.apply(this, args)
 
-      const contextStr = getContextString(options.context, args, responseBody);
+      const contextStr = getContextString(options.context, args, responseBody)
 
       Logger.log(
         `${contextStr ? `[${contextStr}]` : ''} ${timeLabel} took ${
           Date.now() - startTime
         }ms`,
-        target.constructor.name,
-      );
+        target.constructor.name
+      )
 
-      return responseBody;
-    };
-  };
+      return responseBody
+    }
+  }
 }
 
 /**
@@ -66,31 +67,31 @@ export function MeasureTimeAsync(
  */
 export function MeasureTime(
   options: {
-    context: MeasureTimeContext;
+    context: MeasureTimeContext
   } = {
-    context: [],
-  },
+    context: []
+  }
 ) {
   return (
     target: any,
     propertyKey: string,
-    descriptor: TypedPropertyDescriptor<(...params: any[]) => any>,
+    descriptor: TypedPropertyDescriptor<(...params: any[]) => any>
   ) => {
-    const original: (...args: Array<unknown>) => unknown = descriptor.value;
+    const original: ((...params: any[]) => any) | undefined = descriptor.value
 
-    const timeLabel = propertyKey;
+    const timeLabel = propertyKey
     descriptor.value = function (...args: Array<unknown>) {
-      const startTime = Date.now();
-      const value: unknown = original.apply(this, args);
+      const startTime = Date.now()
+      const value: unknown = original?.apply(this, args)
 
-      const contextStr = getContextString(options.context, args, value);
+      const contextStr = getContextString(options.context, args, value)
 
       Logger.log(
         `[${contextStr}] ${timeLabel} took ${Date.now() - startTime}ms`,
-        target.constructor.name,
-      );
+        target.constructor.name
+      )
 
-      return value;
-    };
-  };
+      return value
+    }
+  }
 }

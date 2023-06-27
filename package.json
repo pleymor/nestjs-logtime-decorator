@@ -7,8 +7,9 @@
     "Log",
     "Time"
   ],
-  "main": "index.js",
-  "typings": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "version": "1.0.1",
   "license": "ISC",
   "repository": {
@@ -20,12 +21,14 @@
     "node": ">=16.0.0"
   },
   "scripts": {
+    "build": "tsc",
     "test": "echo \"No test specified\""
   },
   "peerDependencies": {
     "@nestjs/common": ">=6.0.0"
   },
   "devDependencies": {
+    "@types/node": "^20.3.2",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "eslint": "^8.43.0",
