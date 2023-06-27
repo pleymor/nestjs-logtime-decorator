@@ -9,15 +9,15 @@
   ],
   "main": "index.js",
   "typings": "index.d.ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/pleymor/nestjs-logtime-decorator.git"
   },
-  "engines" : {
-    "npm" : ">=8.0.0",
-    "node" : ">=16.0.0"
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
   },
   "scripts": {
     "test": "echo \"No test specified\""
