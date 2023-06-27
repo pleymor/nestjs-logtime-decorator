@@ -15,8 +15,15 @@
     "type": "git",
     "url": "https://github.com/pleymor/nestjs-logtime-decorator.git"
   },
+  "engines" : {
+    "npm" : ">=8.0.0",
+    "node" : ">=16.0.0"
+  },
+  "scripts": {
+    "test": "echo \"No test specified\""
+  },
   "peerDependencies": {
-    "@nestjs/common": "^10.0.3"
+    "@nestjs/common": ">=6.0.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.60.1",
