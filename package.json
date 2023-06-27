@@ -1,0 +1,30 @@
+{
+  "name": "nestjs-logtime-decorator",
+  "description": "Typescript decorator to log the duration of a method, for NestJs.",
+  "keywords": [
+    "Typescript",
+    "NestJS",
+    "Log",
+    "Time"
+  ],
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "version": "1.0.0",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pleymor/nestjs-logtime-decorator.git"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.8",
+    "typescript": "^5.1.3"
+  }
+}
