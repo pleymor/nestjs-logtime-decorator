@@ -10,15 +10,40 @@ function getContextString(
 ) {
   return context
     .map((c) => {
-      if (c.from === 'Request') {
-        return `${c.key}: ${requestArgs[0][c.key]}`
-      } else if (c.from === 'Response') {
-        return `${c.key}: ${response[c.key]}`
-      } else {
-        throw new Error(`Invalid context from: ${c.from}`)
+      switch (c.from) {
+        case 'Request':
+          return `${c.key}: ${requestArgs[0][c.key]}`
+        case 'Response':
+          return `${c.key}: ${response[c.key]}`
+        default:
+          throw new Error(`Invalid context from: ${c.from}`)
       }
     })
     .join(', ')
+}
+
+/**
+ * Log the time a method takes to execute.
+ */
+function logTime(
+  options: {
+    context: MeasureTimeContext
+  },
+  args: unknown[],
+  responseBody: string,
+  timeLabel: string,
+  isError: boolean,
+  startTime: number,
+  target: any
+) {
+  const contextStr = getContextString(options.context, args, responseBody)
+
+  Logger.log(
+    `${contextStr ? `[${contextStr}]` : ''} ${timeLabel} ${
+      isError ? '(error) ' : ''
+    }took ${Date.now() - startTime}ms`,
+    target.constructor.name
+  )
 }
 
 /**
@@ -44,16 +69,25 @@ export function MeasureTimeAsync(
     const timeLabel = propertyKey
     descriptor.value = async function (...args: Array<unknown>) {
       const startTime = Date.now()
-      const responseBody = await original?.apply(this, args)
+      let responseBody = ''
 
-      const contextStr = getContextString(options.context, args, responseBody)
-
-      Logger.log(
-        `${contextStr ? `[${contextStr}]` : ''} ${timeLabel} took ${
-          Date.now() - startTime
-        }ms`,
-        target.constructor.name
-      )
+      let isError = false
+      try {
+        responseBody = await original?.apply(this, args)
+      } catch (e) {
+        isError = true
+        throw e
+      } finally {
+        logTime(
+          options,
+          args,
+          responseBody,
+          timeLabel,
+          isError,
+          startTime,
+          target
+        )
+      }
 
       return responseBody
     }
@@ -82,16 +116,25 @@ export function MeasureTime(
     const timeLabel = propertyKey
     descriptor.value = function (...args: Array<unknown>) {
       const startTime = Date.now()
-      const value: unknown = original?.apply(this, args)
+      let responseBody = ''
 
-      const contextStr = getContextString(options.context, args, value)
-
-      Logger.log(
-        `[${contextStr}] ${timeLabel} took ${Date.now() - startTime}ms`,
-        target.constructor.name
-      )
-
-      return value
+      let isError = false
+      try {
+        responseBody = original?.apply(this, args)
+      } catch (e) {
+        isError = true
+        throw e
+      } finally {
+        logTime(
+          options,
+          args,
+          responseBody,
+          timeLabel,
+          isError,
+          startTime,
+          target
+        )
+      }
     }
   }
 }
