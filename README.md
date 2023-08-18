@@ -42,5 +42,8 @@ export class MyResourceController {
 If POST my-resource is called, it will print:
 > [Nest] 24377  - 06/26/2023, 10:52:35 PM     LOG [MyResourceController] [name: foo, id: 1] createOne took 97ms
 
-If GET my-resource is called, it will print:
-> [Nest] 24377  - 06/26/2023, 10:52:37 PM     LOG [MyResourceController] createOne took 97ms
+If GET my-resource/something is called, it will print:
+> [Nest] 24377  - 06/26/2023, 10:52:37 PM     LOG [MyResourceController] getSomethingSync took 10ms
+
+If GET my-resource/something is called but throws an error, it will print:
+> [Nest] 24377  - 06/26/2023, 10:52:37 PM     LOG [MyResourceController] getSomethingSync (error) took 10ms
